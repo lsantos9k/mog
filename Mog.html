@@ -1,0 +1,1196 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MOG COMBAT • O Duelo Supremo dos Mogadores</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🗿</text></svg>">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,700;0,900;1,700&family=Orbitron:wght@500;700;900&family=Impact&display=swap');
+
+    :root {
+      --bg-dark: #080c14;
+      --bg-card: rgba(15, 23, 42, 0.85);
+      --cyan-neon: #00f0ff;
+      --magenta-neon: #ff007f;
+      --gold-neon: #facc15;
+      --green-neon: #10b981;
+      --red-neon: #ef4444;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --border-glow: rgba(0, 240, 255, 0.35);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: 'Montserrat', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      background-image: 
+        radial-gradient(circle at 15% 20%, rgba(0, 240, 255, 0.08) 0%, transparent 40%),
+        radial-gradient(circle at 85% 75%, rgba(255, 0, 127, 0.08) 0%, transparent 40%),
+        linear-gradient(rgba(8, 12, 20, 0.95), rgba(8, 12, 20, 0.95));
+    }
+
+    .header-bar {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 1rem 2rem; border-bottom: 2px solid rgba(0, 240, 255, 0.25);
+      background: rgba(10, 15, 26, 0.9); backdrop-filter: blur(10px);
+      position: sticky; top: 0; z-index: 100;
+    }
+
+    .logo-container { display: flex; align-items: center; gap: 0.75rem; }
+    .logo-text {
+      font-family: 'Orbitron', sans-serif; font-weight: 900; font-size: 1.6rem; letter-spacing: 2px;
+      background: linear-gradient(135deg, #00f0ff, #ff007f); -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent; text-shadow: 0 0 20px rgba(0, 240, 255, 0.5);
+    }
+    .logo-badge {
+      background: #ff007f; color: #fff; font-size: 0.65rem; font-weight: 900;
+      padding: 0.2rem 0.5rem; border-radius: 4px; font-family: 'Orbitron', sans-serif;
+    }
+    .header-controls { display: flex; gap: 0.75rem; }
+
+    .btn-icon {
+      background: rgba(30, 41, 59, 0.8); border: 1px solid rgba(0, 240, 255, 0.3);
+      color: var(--cyan-neon); padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer;
+      font-family: 'Orbitron', sans-serif; font-size: 0.85rem; display: flex; align-items: center; gap: 0.4rem;
+      transition: all 0.2s ease;
+    }
+    .btn-icon:hover {
+      background: rgba(0, 240, 255, 0.2); border-color: var(--cyan-neon);
+      box-shadow: 0 0 10px rgba(0, 240, 255, 0.4);
+    }
+
+    .nav-tabs {
+      display: flex; justify-content: center; gap: 0.5rem; padding: 1rem;
+      background: rgba(15, 23, 42, 0.6); border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    .nav-tab {
+      background: transparent; border: 1px solid transparent; color: var(--text-muted);
+      padding: 0.6rem 1.4rem; font-family: 'Orbitron', sans-serif; font-size: 0.9rem;
+      font-weight: 700; cursor: pointer; border-radius: 8px; transition: all 0.2s ease;
+      display: flex; align-items: center; gap: 0.5rem;
+    }
+    .nav-tab.active {
+      background: rgba(0, 240, 255, 0.15); color: var(--cyan-neon);
+      border-color: var(--cyan-neon); box-shadow: 0 0 15px rgba(0, 240, 255, 0.3);
+    }
+    .nav-tab:hover:not(.active) { color: #fff; background: rgba(255, 255, 255, 0.05); }
+
+    .tab-content { max-width: 1200px; margin: 1.5rem auto; padding: 0 1rem; display: none; }
+    .tab-content.active { display: block; }
+
+    .scanner-grid { display: grid; grid-template-columns: 1.3fr 1fr; gap: 1.5rem; align-items: start; }
+    @media (max-width: 900px) { .scanner-grid { grid-template-columns: 1fr; } }
+
+    .camera-card {
+      background: var(--bg-card); border: 2px solid var(--border-glow); border-radius: 12px;
+      padding: 1.2rem; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5); position: relative; overflow: hidden;
+    }
+    .camera-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem; }
+    .camera-title { font-family: 'Orbitron', sans-serif; font-size: 1.1rem; color: var(--cyan-neon); display: flex; align-items: center; gap: 0.5rem; }
+    .status-pill { font-size: 0.75rem; padding: 0.2rem 0.6rem; border-radius: 20px; font-family: 'Orbitron', sans-serif; font-weight: bold; }
+    .status-live { background: rgba(16, 185, 129, 0.2); color: var(--green-neon); border: 1px solid var(--green-neon); animation: pulse 2s infinite; }
+    @keyframes pulse { 0% { opacity: 0.7; } 50% { opacity: 1; filter: drop-shadow(0 0 5px var(--green-neon)); } 100% { opacity: 0.7; } }
+
+    .video-wrapper {
+      position: relative; width: 100%; aspect-ratio: 4 / 3; background: #000;
+      border-radius: 8px; overflow: hidden; border: 1px solid rgba(0, 240, 255, 0.4);
+    }
+    #webcam-video { display: none; }
+    #hud-canvas { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+    .camera-actions { display: flex; gap: 0.6rem; margin-top: 1rem; flex-wrap: wrap; }
+    .btn-action {
+      flex: 1; min-width: 140px; background: linear-gradient(135deg, #00f0ff, #0284c7);
+      color: #000; font-family: 'Orbitron', sans-serif; font-weight: 900; font-size: 0.9rem;
+      border: none; padding: 0.8rem 1rem; border-radius: 6px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; gap: 0.4rem; transition: all 0.2s ease;
+    }
+    .btn-action:hover { box-shadow: 0 0 20px rgba(0, 240, 255, 0.7); transform: translateY(-2px); }
+    .btn-secondary { background: rgba(30, 41, 59, 0.8); color: #fff; border: 1px solid rgba(255, 255, 255, 0.2); }
+    .btn-secondary:hover { background: rgba(255, 255, 255, 0.1); border-color: #fff; box-shadow: none; }
+
+    .stats-card {
+      background: var(--bg-card); border: 2px solid rgba(255, 0, 127, 0.35);
+      border-radius: 12px; padding: 1.5rem; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    }
+    .stats-title {
+      font-family: 'Orbitron', sans-serif; color: var(--magenta-neon); font-size: 1.2rem;
+      margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center;
+    }
+    .aura-banner {
+      background: linear-gradient(135deg, rgba(255, 0, 127, 0.2), rgba(0, 240, 255, 0.2));
+      border: 1px solid rgba(255, 0, 127, 0.5); padding: 1rem; border-radius: 8px; text-align: center; margin-bottom: 1.5rem;
+    }
+    .aura-label { font-size: 0.8rem; color: var(--text-muted); font-family: 'Orbitron', sans-serif; letter-spacing: 1px; }
+    .aura-value { font-family: 'Orbitron', sans-serif; font-size: 2.5rem; font-weight: 900; color: var(--gold-neon); text-shadow: 0 0 15px rgba(250, 204, 21, 0.6); line-height: 1.2; }
+    .rank-badge { display: inline-block; margin-top: 0.3rem; font-family: 'Orbitron', sans-serif; font-size: 0.85rem; color: var(--cyan-neon); background: rgba(0, 240, 255, 0.15); padding: 0.2rem 0.8rem; border-radius: 4px; border: 1px solid rgba(0, 240, 255, 0.3); }
+
+    .metric-row { margin-bottom: 1.2rem; }
+    .metric-header { display: flex; justify-content: space-between; font-size: 0.85rem; font-weight: 700; margin-bottom: 0.4rem; font-family: 'Orbitron', sans-serif; }
+    .metric-bar-bg { height: 10px; background: rgba(30, 41, 59, 0.8); border-radius: 5px; overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.08); }
+    .metric-bar-fill { height: 100%; width: 80%; transition: width 0.3s ease; border-radius: 5px; }
+    .fill-jaw { background: linear-gradient(90deg, #0284c7, #00f0ff); box-shadow: 0 0 10px rgba(0, 240, 255, 0.6); }
+    .fill-eyes { background: linear-gradient(90deg, #ca8a04, #facc15); box-shadow: 0 0 10px rgba(250, 204, 21, 0.6); }
+    .fill-cheeks { background: linear-gradient(90deg, #be185d, #ff007f); box-shadow: 0 0 10px rgba(255, 0, 127, 0.6); }
+    .mewing-tip { background: rgba(15, 23, 42, 0.7); border-left: 3px solid var(--cyan-neon); padding: 0.8rem; border-radius: 0 6px 6px 0; font-size: 0.82rem; color: var(--text-muted); line-height: 1.4; margin-top: 1rem; }
+
+    .arena-container {
+      background: var(--bg-card); border: 2px solid rgba(0, 240, 255, 0.3);
+      border-radius: 14px; padding: 1.5rem; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.7);
+    }
+    .arena-header-box { text-align: center; margin-bottom: 1.5rem; }
+    .arena-title { font-family: 'Orbitron', sans-serif; font-size: 1.8rem; font-weight: 900; letter-spacing: 2px; color: #fff; text-shadow: 0 0 20px rgba(0, 240, 255, 0.6); }
+    .arena-subtitle { color: var(--text-muted); font-size: 0.9rem; margin-top: 0.3rem; }
+
+    .opponent-selector-bar {
+      display: flex; gap: 0.8rem; overflow-x: auto; padding: 0.5rem 0.2rem 1rem 0.2rem;
+      margin-bottom: 1.5rem; scrollbar-width: thin; scrollbar-color: var(--cyan-neon) transparent;
+    }
+    .opponent-mini-card {
+      flex: 0 0 120px; background: rgba(30, 41, 59, 0.7); border: 2px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px; padding: 0.6rem; text-align: center; cursor: pointer; transition: all 0.2s ease;
+    }
+    .opponent-mini-card:hover { border-color: var(--cyan-neon); transform: translateY(-3px); }
+    .opponent-mini-card.selected {
+      border-color: var(--magenta-neon); background: rgba(255, 0, 127, 0.15);
+      box-shadow: 0 0 15px rgba(255, 0, 127, 0.4);
+    }
+    .opponent-mini-avatar { width: 60px; height: 60px; margin: 0 auto 0.4rem auto; border-radius: 6px; overflow: hidden; }
+    .opponent-mini-avatar svg { width: 100%; height: 100%; }
+    .opponent-mini-name { font-size: 0.75rem; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-family: 'Orbitron', sans-serif; }
+    .opponent-mini-tier { font-size: 0.65rem; color: var(--gold-neon); font-weight: 900; }
+
+    .versus-stage {
+      display: grid; grid-template-columns: 1fr 140px 1fr; gap: 1rem; align-items: center;
+      background: #04070d; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 1.5rem; position: relative; overflow: hidden;
+    }
+    @media (max-width: 768px) { .versus-stage { grid-template-columns: 1fr; text-align: center; } }
+
+    .fighter-side { text-align: center; }
+    .fighter-photo-box {
+      width: 100%; max-width: 280px; aspect-ratio: 1 / 1; margin: 0 auto 1rem auto;
+      border-radius: 10px; overflow: hidden; border: 3px solid var(--cyan-neon);
+      box-shadow: 0 0 20px rgba(0, 240, 255, 0.3); background: #0f172a; position: relative;
+    }
+    .fighter-photo-box img, .fighter-photo-box svg { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .fighter-name { font-family: 'Orbitron', sans-serif; font-size: 1.3rem; font-weight: 900; color: #fff; }
+    .fighter-title { font-size: 0.8rem; color: var(--cyan-neon); font-family: 'Orbitron', sans-serif; }
+
+    .versus-center { text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 5; }
+    .vs-logo {
+      font-family: 'Impact', sans-serif; font-size: 4rem; font-style: italic; color: var(--gold-neon);
+      text-shadow: 0 0 25px rgba(250, 204, 21, 0.8), 3px 3px 0 #000; animation: pulse-vs 1.5s infinite alternate;
+    }
+    @keyframes pulse-vs { 0% { transform: scale(0.95); } 100% { transform: scale(1.08); filter: drop-shadow(0 0 15px #facc15); } }
+
+    .countdown-display { font-family: 'Orbitron', sans-serif; font-size: 2.2rem; font-weight: 900; color: #fff; min-height: 50px; display: flex; align-items: center; justify-content: center; text-shadow: 0 0 20px var(--magenta-neon); }
+    .round-info-box { background: rgba(0, 0, 0, 0.7); border: 1px solid var(--magenta-neon); padding: 0.6rem 1rem; border-radius: 6px; margin-top: 0.6rem; font-size: 0.8rem; font-family: 'Orbitron', sans-serif; color: #fff; width: 100%; max-width: 220px; }
+
+    .fighter-side-opponent .fighter-photo-box { border-color: var(--magenta-neon); box-shadow: 0 0 20px rgba(255, 0, 127, 0.3); }
+    .fighter-side-opponent .fighter-title { color: var(--magenta-neon); }
+
+    .arena-controls { margin-top: 1.5rem; display: flex; justify-content: center; gap: 1rem; }
+    .btn-fight {
+      background: linear-gradient(135deg, #ff007f, #b91c1c); color: #fff; font-family: 'Impact', sans-serif;
+      font-size: 1.6rem; letter-spacing: 2px; padding: 0.9rem 2.8rem; border: none; border-radius: 8px;
+      cursor: pointer; box-shadow: 0 0 25px rgba(255, 0, 127, 0.6); transition: all 0.2s ease;
+      display: flex; align-items: center; gap: 0.6rem;
+    }
+    .btn-fight:hover { transform: scale(1.04); box-shadow: 0 0 35px rgba(255, 0, 127, 0.9); }
+
+    .verdict-overlay {
+      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+      background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(12px); z-index: 1000;
+      display: none; align-items: center; justify-content: center; padding: 1rem;
+    }
+    .verdict-overlay.active { display: flex; }
+    .verdict-card {
+      background: #090d16; border: 3px solid var(--cyan-neon); border-radius: 16px;
+      width: 100%; max-width: 680px; padding: 2rem; text-align: center;
+      box-shadow: 0 0 50px rgba(0, 240, 255, 0.4); animation: pop-in 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      position: relative;
+    }
+    .verdict-card.defeat { border-color: var(--red-neon); box-shadow: 0 0 50px rgba(239, 68, 68, 0.4); }
+    @keyframes pop-in { 0% { transform: scale(0.7); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+
+    .verdict-stamp {
+      font-family: 'Impact', sans-serif; font-size: 3.5rem; font-style: italic; letter-spacing: 2px;
+      display: inline-block; padding: 0.4rem 2rem; border-radius: 8px; margin-bottom: 1rem; transform: rotate(-3deg);
+    }
+    .stamp-victory { background: var(--green-neon); color: #000; box-shadow: 0 0 30px rgba(16, 185, 129, 0.7); }
+    .stamp-defeat { background: var(--red-neon); color: #fff; box-shadow: 0 0 30px rgba(239, 68, 68, 0.7); }
+    .verdict-title { font-family: 'Orbitron', sans-serif; font-size: 1.5rem; color: #fff; margin-bottom: 0.6rem; }
+    .verdict-quote {
+      font-style: italic; background: rgba(30, 41, 59, 0.6); border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 1rem; border-radius: 8px; margin: 1.2rem 0; font-size: 0.95rem; color: #e2e8f0;
+    }
+    .verdict-actions { display: flex; gap: 0.8rem; justify-content: center; flex-wrap: wrap; }
+
+    .catalog-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1.5rem; }
+    .char-card {
+      background: var(--bg-card); border: 2px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px; padding: 1.2rem; transition: all 0.25s ease; display: flex; flex-direction: column;
+    }
+    .char-card:hover { transform: translateY(-5px); border-color: var(--cyan-neon); box-shadow: 0 10px 25px rgba(0, 240, 255, 0.2); }
+    .char-avatar-container { width: 100%; aspect-ratio: 1 / 1; border-radius: 8px; overflow: hidden; margin-bottom: 1rem; background: #0f172a; }
+    .char-avatar-container svg { width: 100%; height: 100%; display: block; }
+    .char-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem; }
+    .char-name { font-family: 'Orbitron', sans-serif; font-size: 1.1rem; font-weight: 700; color: #fff; }
+    .char-tier {
+      font-family: 'Orbitron', sans-serif; font-weight: 900; font-size: 0.85rem; padding: 0.2rem 0.5rem;
+      border-radius: 4px; background: rgba(250, 204, 21, 0.15); color: var(--gold-neon); border: 1px solid rgba(250, 204, 21, 0.3);
+    }
+    .char-origin { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.8rem; }
+    .char-stats-compact {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.4rem; background: rgba(15, 23, 42, 0.6);
+      padding: 0.6rem; border-radius: 6px; margin-bottom: 0.8rem; text-align: center;
+    }
+    .stat-box-num { font-family: 'Orbitron', sans-serif; font-size: 0.95rem; font-weight: bold; color: var(--cyan-neon); }
+    .stat-box-lbl { font-size: 0.65rem; color: var(--text-muted); }
+    .btn-challenge {
+      margin-top: auto; background: transparent; border: 1px solid var(--magenta-neon);
+      color: var(--magenta-neon); font-family: 'Orbitron', sans-serif; font-weight: bold;
+      font-size: 0.85rem; padding: 0.6rem; border-radius: 6px; cursor: pointer; transition: all 0.2s ease;
+    }
+    .btn-challenge:hover { background: var(--magenta-neon); color: #fff; box-shadow: 0 0 15px rgba(255, 0, 127, 0.5); }
+  </style>
+</head>
+<body>
+
+  <!-- Barra Superior -->
+  <header class="header-bar">
+    <div class="logo-container">
+      <span style="font-size: 1.8rem;">🗿</span>
+      <h1 class="logo-text">MOG COMBAT</h1>
+      <span class="logo-badge">X1 SUPREMO</span>
+    </div>
+    <div class="header-controls">
+      <button id="btn-toggle-sound" class="btn-icon">
+        <span id="sound-icon">🔊</span> <span id="sound-text">Áudio: LIGADO</span>
+      </button>
+      <button id="btn-help" class="btn-icon" title="Instruções de Mewing">
+        <span>❓</span> <span>Como Jogar</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Navegação por Abas -->
+  <nav class="nav-tabs">
+    <button class="nav-tab active" data-tab="tab-scanner">
+      <span>📸</span> 1. Scanner de Mogador
+    </button>
+    <button class="nav-tab" data-tab="tab-arena">
+      <span>⚔️</span> 2. Arena X1
+    </button>
+    <button class="nav-tab" data-tab="tab-catalog">
+      <span>🏆</span> 3. Personagens & Tier List
+    </button>
+  </nav>
+
+  <!-- ABA 1: SCANNER FACIAL -->
+  <main id="tab-scanner" class="tab-content active">
+    <div class="scanner-grid">
+      <section class="camera-card">
+        <div class="camera-header">
+          <h2 class="camera-title">
+            <span>📡</span> SCANNER FACIAL CIBERNÉTICO
+          </h2>
+          <span id="camera-status" class="status-pill status-live">AGUARDANDO CÂMERA</span>
+        </div>
+
+        <div class="video-wrapper">
+          <video id="webcam-video" playsinline autoplay muted></video>
+          <canvas id="hud-canvas"></canvas>
+        </div>
+
+        <div class="camera-actions">
+          <button id="btn-start-camera" class="btn-action">
+            <span>📹</span> Ligar Câmera
+          </button>
+          <button id="btn-lock-pose" class="btn-action" style="background: linear-gradient(135deg, #10b981, #059669);">
+            <span>📸</span> Travar Pose & Ir pro X1
+          </button>
+          <label class="btn-action btn-secondary" style="cursor: pointer;">
+            <span>📁</span> Enviar Foto
+            <input type="file" id="input-upload-photo" accept="image/*" style="display: none;">
+          </label>
+          <button id="btn-demo-face" class="btn-action btn-secondary">
+            <span>👤</span> Rosto Demo
+          </button>
+        </div>
+      </section>
+
+      <aside class="stats-card">
+        <div class="stats-title">
+          <span>🧬 MÉTRICAS DO MOGADOR</span>
+          <span style="font-size: 0.75rem; color: var(--cyan-neon);">AO VIVO</span>
+        </div>
+
+        <div class="aura-banner">
+          <div class="aura-label">PONTUAÇÃO DE AURA (MOG POWER)</div>
+          <div id="stat-aura" class="aura-value">840</div>
+          <div id="stat-rank" class="rank-badge">LOOKSMAXXER EM ALTA</div>
+        </div>
+
+        <div class="metric-row">
+          <div class="metric-header">
+            <span>📐 Mandíbula Blindada (Jawline)</span>
+            <span id="stat-jaw-val" style="color: var(--cyan-neon);">85%</span>
+          </div>
+          <div class="metric-bar-bg">
+            <div id="bar-jaw" class="metric-bar-fill fill-jaw"></div>
+          </div>
+        </div>
+
+        <div class="metric-row">
+          <div class="metric-header">
+            <span>👁️ Hunter Eyes (Canthal Tilt)</span>
+            <span id="stat-eyes-val" style="color: var(--gold-neon);">88%</span>
+          </div>
+          <div class="metric-bar-bg">
+            <div id="bar-eyes" class="metric-bar-fill fill-eyes"></div>
+          </div>
+        </div>
+
+        <div class="metric-row">
+          <div class="metric-header">
+            <span>🦴 Projeção Zigomática (Maçãs)</span>
+            <span id="stat-cheeks-val" style="color: var(--magenta-neon);">84%</span>
+          </div>
+          <div class="metric-bar-bg">
+            <div id="bar-cheeks" class="metric-bar-fill fill-cheeks"></div>
+          </div>
+        </div>
+
+        <div class="mewing-tip">
+          💡 <strong>Dica de Mewing:</strong> Pressione toda a língua contra o céu da boca, feche a boca e respire apenas pelo nariz. Incline ligeiramente a cabeça para destacar a linha da mandíbula antes de travar a pose!
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <!-- ABA 2: ARENA DE X1 -->
+  <main id="tab-arena" class="tab-content">
+    <section class="arena-container">
+      <div class="arena-header-box">
+        <h2 class="arena-title">ARENA SUPREMA DE X1</h2>
+        <p class="arena-subtitle">Escolha seu adversário famoso e descubra quem vai mogar quem no confronto direto!</p>
+      </div>
+
+      <div id="opponent-selector" class="opponent-selector-bar"></div>
+
+      <div class="versus-stage">
+        <!-- Jogador -->
+        <div class="fighter-side">
+          <div class="fighter-photo-box">
+            <img id="player-preview-img" src="" alt="Seu Rosto" style="display: none;">
+            <div id="player-placeholder" style="display: flex; align-items: center; justify-content: center; height: 100%; color: var(--text-muted); font-size: 0.85rem; padding: 1rem; text-align: center;">
+              Posicione seu rosto no Scanner e clique em "Travar Pose"
+            </div>
+          </div>
+          <h3 class="fighter-name">VOCÊ</h3>
+          <div id="arena-player-rank" class="fighter-title">DESAFIANTE</div>
+          <div id="arena-player-aura" style="font-family: 'Orbitron', monospace; font-size: 0.85rem; color: var(--gold-neon); margin-top: 0.3rem;">AURA: 840 PTS</div>
+        </div>
+
+        <!-- Centro VS -->
+        <div class="versus-center">
+          <div class="vs-logo">VS</div>
+          <div id="battle-countdown" class="countdown-display"></div>
+          <div id="battle-round-info" class="round-info-box" style="display: none;">
+            <div id="round-title" style="font-weight: bold; color: var(--gold-neon); margin-bottom: 0.2rem;">ROUND</div>
+            <div id="round-clash" style="font-size: 0.75rem;"></div>
+          </div>
+        </div>
+
+        <!-- Adversário -->
+        <div class="fighter-side fighter-side-opponent">
+          <div id="opponent-avatar-box" class="fighter-photo-box"></div>
+          <h3 id="arena-opp-name" class="fighter-name">OMNI-MAN</h3>
+          <div id="arena-opp-badge" class="fighter-title">VILTRUMITA ALFA</div>
+          <div id="arena-opp-aura" style="font-family: 'Orbitron', monospace; font-size: 0.85rem; color: var(--gold-neon); margin-top: 0.3rem;">AURA: 940 PTS</div>
+        </div>
+      </div>
+
+      <div class="arena-controls">
+        <button id="btn-start-battle" class="btn-fight">
+          <span>⚡</span> LUTAR X1 DE MOGGING!
+        </button>
+      </div>
+    </section>
+  </main>
+
+  <!-- ABA 3: CATÁLOGO DE PERSONAGENS -->
+  <main id="tab-catalog" class="tab-content">
+    <div style="text-align: center; margin-bottom: 1.5rem;">
+      <h2 style="font-family: 'Orbitron', sans-serif; font-size: 1.6rem; color: var(--cyan-neon);">ROSTER DE DESAFIANTES FAMOSOS</h2>
+      <p style="color: var(--text-muted); font-size: 0.9rem;">Desenhos, filmes e séries lendários prontos para o X1 de Looksmaxxing.</p>
+    </div>
+    <div id="catalog-grid" class="catalog-grid"></div>
+  </main>
+
+  <!-- MODAL DE VEREDITO -->
+  <div id="verdict-modal" class="verdict-overlay">
+    <div id="verdict-card-box" class="verdict-card">
+      <div id="verdict-stamp" class="verdict-stamp stamp-victory">MOGGED!</div>
+      <h3 id="verdict-title" class="verdict-title">VOCÊ MOGOU O RELÂMPAGO MCQUEEN!</h3>
+      <p id="verdict-subtitle" style="color: var(--text-muted); font-size: 0.9rem;"></p>
+      <div id="verdict-quote" class="verdict-quote"></div>
+
+      <canvas id="card-canvas" style="display: none;"></canvas>
+
+      <div class="verdict-actions">
+        <button id="btn-download-card" class="btn-action" style="background: linear-gradient(135deg, #facc15, #eab308);">
+          <span>📥</span> Baixar Card de Batalha
+        </button>
+        <button id="btn-rematch" class="btn-action btn-secondary">
+          <span>🔄</span> Jogar Novamente
+        </button>
+        <button id="btn-next-opp" class="btn-action">
+          <span>⏩</span> Próximo Desafiante
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- JAVASCRIPT COMPLETO INTEGRADO -->
+  <script>
+    // 1. BANCO DE DADOS DOS PERSONAGENS
+    const CHARACTERS = [
+      {
+        id: "omni-man", name: "Omni-Man", origin: "Invencível (Invincible)",
+        tagline: "A mandíbula de Viltrum que partiu montanhas ao meio.", tier: "S+",
+        aura: 940, jawline: 96, hunterEyes: 92, cheekbones: 89,
+        themeColor: "#e53e3e", accentColor: "#feb2b2", badge: "Viltrumita Alfa",
+        introQuote: "Você realmente acha que sua simetria facial pode competir com o sangue de Viltrum? PENSE, HUMANO!",
+        moggedUserQuote: "Olhe o que você me fez fazer! Seu ângulo mandibular é patético. Volte a treinar mastigação por mais um milênio.",
+        userMoggedQuote: "Impossível... Essa definição de mandíbula... Nem mesmo o Conquistador de Viltrum possui tal canthal tilt!",
+        avatarSvg: `<svg viewBox="0 0 160 160"><defs><linearGradient id="omni-bg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#b91c1c"/><stop offset="100%" stop-color="#450a0a"/></linearGradient></defs><rect width="160" height="160" rx="20" fill="url(#omni-bg)"/><path d="M20 160 Q80 120 140 160 L160 160 L0 160 Z" fill="#991b1b"/><path d="M40 160 L80 115 L120 160 Z" fill="#ffffff"/><circle cx="80" cy="138" r="14" fill="#dc2626"/><polygon points="50,45 110,45 112,85 88,112 72,112 48,85" fill="#fde68a"/><path d="M46 45 Q80 20 114 45 Q118 35 110 26 Q80 15 50 26 Z" fill="#1e293b"/><polygon points="54,58 75,64 74,60 55,54" fill="#0f172a"/><polygon points="106,58 85,64 86,60 105,54" fill="#0f172a"/><ellipse cx="65" cy="67" rx="7" ry="2.5" fill="#ffffff"/><circle cx="66" cy="67" r="2" fill="#0f172a"/><ellipse cx="95" cy="67" rx="7" ry="2.5" fill="#ffffff"/><circle cx="94" cy="67" r="2" fill="#0f172a"/><path d="M60 88 Q80 84 100 88 Q80 98 60 88 Z" fill="#0f172a"/><line x1="58" y1="85" x2="74" y2="108" stroke="#d97706" stroke-width="2"/><line x1="102" y1="85" x2="86" y2="108" stroke="#d97706" stroke-width="2"/></svg>`
+      },
+      {
+        id: "mcqueen", name: "Relâmpago McQueen", origin: "Carros (Pixar)",
+        tagline: "Mais rápido que a luz, mais cinzelado que fibra de carbono. KACHOW!", tier: "S",
+        aura: 890, jawline: 95, hunterEyes: 88, cheekbones: 84,
+        themeColor: "#dc2626", accentColor: "#facc15", badge: "Velocidade & Smirk",
+        introQuote: "Eu sou a velocidade. Um vencedor, 42 perdedores. Eu como perdedores de queixo fino no café da manhã!",
+        moggedUserQuote: "KACHOW! Você piscou e meu para-choque mandibular te mogou a 320 km/h!",
+        userMoggedQuote: "Doc Hudson nunca me ensinou a lidar com uma mandíbula dessa envergadura... Eu fui... KACHOWGADO!",
+        avatarSvg: `<svg viewBox="0 0 160 160"><defs><linearGradient id="mcq-bg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#ef4444"/><stop offset="100%" stop-color="#991b1b"/></linearGradient></defs><rect width="160" height="160" rx="20" fill="url(#mcq-bg)"/><path d="M25 125 C20 90 35 60 80 58 C125 60 140 90 135 125 Z" fill="#dc2626"/><path d="M42 82 Q80 72 118 82 Q112 60 80 58 Q48 60 42 82 Z" fill="#ffffff"/><ellipse cx="64" cy="74" rx="9" ry="5" fill="#38bdf8"/><circle cx="65" cy="74" r="3" fill="#0369a1"/><ellipse cx="96" cy="73" rx="9" ry="4" fill="#38bdf8"/><circle cx="97" cy="73" r="3" fill="#0369a1"/><polygon points="30,110 50,112 40,118 26,116" fill="#facc15"/><polygon points="130,110 110,112 120,118 134,116" fill="#facc15"/><path d="M50 128 Q80 140 114 124" stroke="#ffffff" stroke-width="5" stroke-linecap="round" fill="none"/><text x="80" y="105" font-family="'Impact', sans-serif" font-size="18" fill="#facc15" text-anchor="middle" font-weight="bold" font-style="italic">95</text></svg>`
+      },
+      {
+        id: "handsome-squidward", name: "Lula Molusco Bonitão", origin: "Bob Esponja Calça Quadrada",
+        tagline: "A própria definição mitológica de perfeição anatômica marinha.", tier: "Z+",
+        aura: 999, jawline: 100, hunterEyes: 98, cheekbones: 100,
+        themeColor: "#0284c7", accentColor: "#38bdf8", badge: "Divindade dos Looks",
+        introQuote: "Não me inveje por eu ser gracioso, radiante e dotado de ângulos que fariam Afrodite chorar.",
+        moggedUserQuote: "Ouviu esse som? É o estalo da sua autoestima quebrando contra a minha maçã do rosto hiper-projetada.",
+        userMoggedQuote: "Não... meus pômulos! Meu osso zigomático perfeito! Como você ousa ter um maxilar mais esculpido que o meu?!",
+        avatarSvg: `<svg viewBox="0 0 160 160"><defs><linearGradient id="lula-bg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#0369a1"/><stop offset="100%" stop-color="#082f49"/></linearGradient></defs><rect width="160" height="160" rx="20" fill="url(#lula-bg)"/><polygon points="50,40 110,40 122,80 94,130 66,130 38,80" fill="#7dd3fc"/><path d="M38 80 L62 82 L50 95 Z" fill="#38bdf8"/><path d="M122 80 L98 82 L110 95 Z" fill="#38bdf8"/><line x1="50" y1="95" x2="68" y2="125" stroke="#0284c7" stroke-width="2.5"/><line x1="110" y1="95" x2="92" y2="125" stroke="#0284c7" stroke-width="2.5"/><ellipse cx="62" cy="62" rx="10" ry="3" fill="#ffffff"/><circle cx="63" cy="62" r="2.5" fill="#ca8a04"/><ellipse cx="98" cy="62" rx="10" ry="3" fill="#ffffff"/><circle cx="97" cy="62" r="2.5" fill="#ca8a04"/><polygon points="80,55 75,98 85,98" fill="#38bdf8"/><path d="M68 112 Q80 108 92 112 Q80 118 68 112 Z" fill="#f43f5e"/></svg>`
+      },
+      {
+        id: "homelander", name: "Capitão Pátria", origin: "The Boys",
+        tagline: "Eu faço o que eu quiser. E meu olhar queima até a alma.", tier: "S+",
+        aura: 925, jawline: 94, hunterEyes: 93, cheekbones: 90,
+        themeColor: "#1d4ed8", accentColor: "#ef4444", badge: "Super Herói Psicopata",
+        introQuote: "Vocês não são os verdadeiros heróis. EU SOU O HERÓI. E meu mogging é o melhor do planeta Terra!",
+        moggedUserQuote: "Eu posso voar, posso queimar seus olhos com lasers e, honestamente? Sua estrutura facial me dá tédio. Mogged!",
+        userMoggedQuote: "NÃO, NÃO, NÃO! Ninguém é melhor que eu! Vought, cancele o contrato desse humano com mandíbula superior!",
+        avatarSvg: `<svg viewBox="0 0 160 160"><defs><linearGradient id="hl-bg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#1e3a8a"/><stop offset="100%" stop-color="#0f172a"/></linearGradient></defs><rect width="160" height="160" rx="20" fill="url(#hl-bg)"/><path d="M20 160 L40 120 L80 130 L120 120 L140 160 Z" fill="#dc2626"/><polygon points="52,50 108,50 114,90 92,120 68,120 46,90" fill="#fed7aa"/><path d="M46 50 Q80 25 114 45 Q120 30 105 22 Q75 18 50 25 Z" fill="#facc15"/><ellipse cx="65" cy="68" rx="8" ry="3.5" fill="#fee2e2"/><circle cx="66" cy="68" r="3" fill="#ef4444"/><ellipse cx="95" cy="68" rx="8" ry="3.5" fill="#fee2e2"/><circle cx="94" cy="68" r="3" fill="#ef4444"/><line x1="66" y1="68" x2="30" y2="76" stroke="#ef4444" stroke-width="2" opacity="0.8"/><line x1="94" y1="68" x2="130" y2="76" stroke="#ef4444" stroke-width="2" opacity="0.8"/><path d="M64 100 Q80 96 96 100 Q80 105 64 100" fill="#ffffff" stroke="#9a3412" stroke-width="1"/></svg>`
+      },
+      {
+        id: "gigachad", name: "GigaChad", origin: "Meme Supremo / Ernest Khalimov",
+        tagline: "O ápice inatingível do looksmaxxing e da perfeição masculina.", tier: "Z+",
+        aura: 1000, jawline: 100, hunterEyes: 100, cheekbones: 100,
+        themeColor: "#475569", accentColor: "#94a3b8", badge: "Boss Final",
+        introQuote: "Sim, eu sei que você veio aqui me desafiar. Pode tentar. Can you feel my heart?",
+        moggedUserQuote: "Você lutou bem, garoto. Continue praticando o mewing diário, um dia você chegará aos meus 5% de queixo.",
+        userMoggedQuote: "...O quê?! Um ser mortal conseguiu me equiparar em simetria mandibular? Eu te reconheço como um Chad honorário.",
+        avatarSvg: `<svg viewBox="0 0 160 160"><defs><linearGradient id="chad-bg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#334155"/><stop offset="100%" stop-color="#0f172a"/></linearGradient></defs><rect width="160" height="160" rx="20" fill="url(#chad-bg)"/><polygon points="45,45 115,45 120,95 95,135 65,135 40,95" fill="#cbd5e1"/><path d="M40 92 L65 135 L95 135 L120 92 L112 90 L95 125 L65 125 L48 90 Z" fill="#0f172a"/><path d="M38 45 Q80 10 122 45 Q125 25 105 15 Q75 12 45 22 Z" fill="#0f172a"/><ellipse cx="62" cy="62" rx="9" ry="2.8" fill="#ffffff"/><circle cx="63" cy="62" r="2" fill="#0f172a"/><ellipse cx="98" cy="62" rx="9" ry="2.8" fill="#ffffff"/><circle cx="97" cy="62" r="2" fill="#0f172a"/></svg>`
+      },
+      {
+        id: "patrick-bateman", name: "Patrick Bateman", origin: "Psicopata Americano",
+        tagline: "Look at that subtle off-white coloring. The tasteful thickness of it.", tier: "A+",
+        aura: 860, jawline: 88, hunterEyes: 91, cheekbones: 87,
+        themeColor: "#0f766e", accentColor: "#2dd4bf", badge: "Yuppie Psicopata",
+        introQuote: "Eu tenho todas as características de um ser humano: carne, sangue, pele, cabelo... mas nem um pingo de pena de te mogar.",
+        moggedUserQuote: "Muito amador. Veja o relevo da minha mandíbula, a espessura elegante dela... Você nem sequer faz massagem facial matinal!",
+        userMoggedQuote: "Meu Deus... Olhe essa inclinação cantal... O cartão de visitas dele é muito mais espesso que o meu!",
+        avatarSvg: `<svg viewBox="0 0 160 160"><defs><linearGradient id="pb-bg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#134e4a"/><stop offset="100%" stop-color="#042f2e"/></linearGradient></defs><rect width="160" height="160" rx="20" fill="url(#pb-bg)"/><polygon points="50,45 110,45 114,88 90,118 70,118 46,88" fill="#fed7aa"/><path d="M46 38 Q80 20 114 38 Q118 50 114 42 Q80 28 46 42 Z" fill="#451a03"/><ellipse cx="64" cy="65" rx="7.5" ry="3" fill="#ffffff"/><circle cx="65" cy="65" r="2.2" fill="#0284c7"/><ellipse cx="96" cy="65" rx="7.5" ry="3" fill="#ffffff"/><circle cx="95" cy="65" r="2.2" fill="#0284c7"/><path d="M68 98 Q80 94 92 98" stroke="#9a3412" stroke-width="2" fill="none"/></svg>`
+      },
+      {
+        id: "thomas-shelby", name: "Thomas Shelby", origin: "Peaky Blinders",
+        tagline: "Pela ordem dos Peaky F***ing Blinders, você acabou de ser mogado.", tier: "A+",
+        aura: 880, jawline: 90, hunterEyes: 94, cheekbones: 86,
+        themeColor: "#334155", accentColor: "#64748b", badge: "Líder de Birmingham",
+        introQuote: "Sem brigas. Sem brincadeiras. E principalmente: sem perder a postura de caçador diante de mim.",
+        moggedUserQuote: "Eu já vi coisas piores na França, mas a fragilidade da sua linha mandibular quase me fez soltar a fumaça mais cedo.",
+        userMoggedQuote: "Por ordem... de quem é você? Esse olhar frio... Você pertence ao Parlamento dos Mogadores.",
+        avatarSvg: `<svg viewBox="0 0 160 160"><defs><linearGradient id="ts-bg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#1e293b"/><stop offset="100%" stop-color="#090d16"/></linearGradient></defs><rect width="160" height="160" rx="20" fill="url(#ts-bg)"/><path d="M35 48 C40 25 120 25 125 48 C135 50 120 62 80 58 C40 62 25 50 35 48 Z" fill="#334155"/><polygon points="52,55 108,55 115,90 92,122 68,122 45,90" fill="#fbcfe8"/><ellipse cx="64" cy="72" rx="7" ry="2.2" fill="#e0f2fe"/><circle cx="65" cy="72" r="1.8" fill="#0284c7"/><ellipse cx="96" cy="72" rx="7" ry="2.2" fill="#e0f2fe"/><circle cx="95" cy="72" r="1.8" fill="#0284c7"/><line x1="86" y1="104" x2="110" y2="108" stroke="#ffffff" stroke-width="3"/><circle cx="110" cy="108" r="1.5" fill="#f97316"/></svg>`
+      },
+      {
+        id: "walter-white", name: "Walter White (Heisenberg)", origin: "Breaking Bad",
+        tagline: "I am not in danger, Skyler. I AM THE DANGER. I am the one who mogs.", tier: "S",
+        aura: 910, jawline: 91, hunterEyes: 93, cheekbones: 88,
+        themeColor: "#854d0e", accentColor: "#eab308", badge: "O Cozinheiro Alfa",
+        introQuote: "Diga o meu nome. Você sabe exatamente quem sou eu e qual a pureza da minha simetria.",
+        moggedUserQuote: "Seu ângulo mandibular é inferior a 60% de pureza. Jesse, descarte esse espécime no barril de ácido.",
+        userMoggedQuote: "Você... você é o Heisenberg do looksmaxxing? You got me.",
+        avatarSvg: `<svg viewBox="0 0 160 160"><defs><linearGradient id="ww-bg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#713f12"/><stop offset="100%" stop-color="#1c1917"/></linearGradient></defs><rect width="160" height="160" rx="20" fill="url(#ww-bg)"/><path d="M25 45 C35 40 125 40 135 45 L145 50 L15 50 Z" fill="#1c1917"/><rect x="48" y="24" width="64" height="24" rx="4" fill="#292524"/><polygon points="50,48 110,48 112,88 90,118 70,118 48,88" fill="#fed7aa"/><rect x="54" y="62" width="22" height="16" rx="2" fill="none" stroke="#78716c" stroke-width="2.5"/><rect x="84" y="62" width="22" height="16" rx="2" fill="none" stroke="#78716c" stroke-width="2.5"/><circle cx="65" cy="70" r="2.5" fill="#44403c"/><circle cx="95" cy="70" r="2.5" fill="#44403c"/><path d="M68 94 Q80 92 92 94 L92 116 Q80 122 68 116 Z" fill="#78350f"/></svg>`
+      },
+      {
+        id: "buzz-lightyear", name: "Buzz Lightyear", origin: "Toy Story",
+        tagline: "Ao infinito... e além da mandíbula humana comum!", tier: "A",
+        aura: 850, jawline: 97, hunterEyes: 82, cheekbones: 83,
+        themeColor: "#15803d", accentColor: "#a855f7", badge: "Patrulheiro Espacial",
+        introQuote: "Comando Estelar, estou em missão de reconhecimento. Detectei uma anomalia facial neste quadrante!",
+        moggedUserQuote: "Você é um brinquedo triste e estranho com queixo duplo. Você não moga, você só cai com estilo!",
+        userMoggedQuote: "Pelos anéis de Saturno! Essa cavidade no queixo... Você foi treinado pelo próprio Zurg?!",
+        avatarSvg: `<svg viewBox="0 0 160 160"><defs><linearGradient id="buzz-bg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#166534"/><stop offset="100%" stop-color="#581c87"/></linearGradient></defs><rect width="160" height="160" rx="20" fill="url(#buzz-bg)"/><ellipse cx="80" cy="72" rx="42" ry="46" fill="#7e22ce"/><polygon points="56,52 104,52 108,85 88,114 72,114 52,85" fill="#fde68a"/><circle cx="80" cy="104" r="5" fill="none" stroke="#ca8a04" stroke-width="2"/><ellipse cx="66" cy="65" rx="6" ry="4" fill="#ffffff"/><circle cx="67" cy="65" r="2.5" fill="#2563eb"/><ellipse cx="94" cy="65" rx="6" ry="4" fill="#ffffff"/><circle cx="93" cy="65" r="2.5" fill="#2563eb"/><path d="M68 86 Q80 94 92 86" stroke="#b45309" stroke-width="2.5" fill="none"/></svg>`
+      },
+      {
+        id: "alien-x", name: "Alien X", origin: "Ben 10",
+        tagline: "Ser celestial onipotente cuja própria existência moga todo o multiverso.", tier: "Z+",
+        aura: 980, jawline: 98, hunterEyes: 99, cheekbones: 95,
+        themeColor: "#000000", accentColor: "#38bdf8", badge: "Mogger Cósmico",
+        introQuote: "Bellicus e Serena debateram por um milhão de anos e concordaram em uma única coisa: você não tem aura para me encarar.",
+        moggedUserQuote: "Movimento aprovado por unanimidade: você acaba de ser apagado da linha temporal do looksmaxxing.",
+        userMoggedQuote: "Isso não estava no acordo de personalidades! Como um mortal gerou tanta energia cósmica na mandíbula?!",
+        avatarSvg: `<svg viewBox="0 0 160 160"><defs><radialGradient id="space-grad" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#1e1b4b"/><stop offset="100%" stop-color="#020617"/></radialGradient></defs><rect width="160" height="160" rx="20" fill="url(#space-grad)"/><path d="M48 60 L60 25 L70 50 L80 18 L90 50 L100 25 L112 60 L115 95 L95 130 L65 130 L45 95 Z" fill="#000000" stroke="#38bdf8" stroke-width="2"/><polygon points="56,66 74,68 70,72 58,70" fill="#22c55e"/><polygon points="104,66 86,68 90,72 102,70" fill="#22c55e"/></svg>`
+      },
+      {
+        id: "shrek-gigachad", name: "Shrek (Gigashrek)", origin: "Shrek",
+        tagline: "O ogro mais charmoso de Tão Tão Distante. Cebolas têm camadas, eu tenho mandíbula.", tier: "S",
+        aura: 875, jawline: 93, hunterEyes: 85, cheekbones: 92,
+        themeColor: "#4d7c0f", accentColor: "#a3e635", badge: "Alfa do Pântano",
+        introQuote: "O que você está fazendo no meu pântano com essa cara de quem respira pela boca?",
+        moggedUserQuote: "Cebolas têm camadas, e meu queixo de ogro tem mais definição que todo o seu feed do TikTok!",
+        userMoggedQuote: "Pelos pães de gengibre do Burro! Sua aura é mais potente que meu rugido de ogro!",
+        avatarSvg: `<svg viewBox="0 0 160 160"><defs><linearGradient id="shrek-bg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#365314"/><stop offset="100%" stop-color="#14532d"/></linearGradient></defs><rect width="160" height="160" rx="20" fill="url(#shrek-bg)"/><path d="M42 55 Q20 40 22 50 Q28 62 45 60 Z" fill="#65a30d"/><path d="M118 55 Q140 40 138 50 Q132 62 115 60 Z" fill="#65a30d"/><polygon points="45,45 115,45 125,85 100,128 60,128 35,85" fill="#84cc16"/><ellipse cx="80" cy="85" rx="16" ry="10" fill="#65a30d"/><circle cx="74" cy="87" r="3" fill="#3f6212"/><circle cx="86" cy="87" r="3" fill="#3f6212"/><ellipse cx="62" cy="65" rx="8" ry="3.5" fill="#fef08a"/><circle cx="63" cy="65" r="2.5" fill="#713f12"/><ellipse cx="98" cy="65" rx="8" ry="3.5" fill="#fef08a"/><circle cx="97" cy="65" r="2.5" fill="#713f12"/></svg>`
+      },
+      {
+        id: "ken-gosling", name: "Ken (Ryan Gosling)", origin: "Barbie / Drive",
+        tagline: "I'm just Ken. And anywhere else I'd be a 10.", tier: "A+",
+        aura: 840, jawline: 91, hunterEyes: 89, cheekbones: 90,
+        themeColor: "#db2777", accentColor: "#f472b6", badge: "Kenergy Total",
+        introQuote: "Meu trabalho é praia. E mogar quem tentar invadir minha Mojo Dojo Casa House.",
+        moggedUserQuote: "Não fique triste. Nem todo mundo nasceu com essa Kenergy natural na mandíbula!",
+        userMoggedQuote: "Uau... Você é... Kenough! Acho que agora você é o novo líder do cavalo na praia!",
+        avatarSvg: `<svg viewBox="0 0 160 160"><defs><linearGradient id="ken-bg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#ec4899"/><stop offset="100%" stop-color="#be185d"/></linearGradient></defs><rect width="160" height="160" rx="20" fill="url(#ken-bg)"/><path d="M42 45 Q80 15 118 45 Q122 30 105 20 Q75 16 48 24 Z" fill="#fef08a"/><polygon points="50,48 110,48 114,88 90,118 70,118 46,88" fill="#ffedd5"/><ellipse cx="64" cy="65" rx="7.5" ry="3" fill="#ffffff"/><circle cx="65" cy="65" r="2.2" fill="#0284c7"/><ellipse cx="96" cy="65" rx="7.5" ry="3" fill="#ffffff"/><circle cx="95" cy="65" r="2.2" fill="#0284c7"/><path d="M66 96 Q80 104 94 96" stroke="#be185d" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg>`
+      },
+      {
+        id: "batman", name: "Batman (A Vingança)", origin: "DC Comics / The Batman",
+        tagline: "Eu sou a noite. Eu sou a vingança. Eu sou o mogger de Gotham.", tier: "S+",
+        aura: 935, jawline: 96, hunterEyes: 95, cheekbones: 91,
+        themeColor: "#0f172a", accentColor: "#3b82f6", badge: "Cavaleiro das Trevas",
+        introQuote: "O medo é uma ferramenta. Mas essa mandíbula exposta na máscara é um aviso para todos os criminosos.",
+        moggedUserQuote: "Você achou que podia vencer o Cavaleiro das Trevas no olhar? Gotham pertence a quem não pisca.",
+        userMoggedQuote: "...Você tem preparo. Admito que o Asilo Arkham não tem ninguém com uma linha goníaca tão afiada.",
+        avatarSvg: `<svg viewBox="0 0 160 160"><defs><linearGradient id="bat-bg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#1e293b"/><stop offset="100%" stop-color="#020617"/></linearGradient></defs><rect width="160" height="160" rx="20" fill="url(#bat-bg)"/><path d="M42 60 L45 20 L58 45 L102 45 L115 20 L118 60 L124 95 L95 132 L65 132 L36 95 Z" fill="#0f172a"/><polygon points="62,94 98,94 92,122 68,122" fill="#fed7aa"/><polygon points="56,66 74,68 70,72 58,70" fill="#ffffff"/><polygon points="104,66 86,68 90,72 102,70" fill="#ffffff"/></svg>`
+      },
+      {
+        id: "peter-griffin", name: "Peter Griffin", origin: "Family Guy (Uma Família da Pesada)",
+        tagline: "Hehehehehe, Lois, olha só o meu queixo com duas bolas de boliche!", tier: "B",
+        aura: 760, jawline: 68, hunterEyes: 70, cheekbones: 72,
+        themeColor: "#15803d", accentColor: "#ffffff", badge: "Mogador de Quahog",
+        introQuote: "Hehehehehe! Isso me lembra aquela vez que desafiei o Mike Tyson no x1 de olhar!",
+        moggedUserQuote: "Nossa, até o Meg tem uma linha de queixo melhor que essa sua aí! Hehehehe!",
+        userMoggedQuote: "Aí caramba, me dei mal! Lois, traz o saco de gelo pro meu queixo duplo!",
+        avatarSvg: `<svg viewBox="0 0 160 160"><defs><linearGradient id="pg-bg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#15803d"/><stop offset="100%" stop-color="#14532d"/></linearGradient></defs><rect width="160" height="160" rx="20" fill="url(#pg-bg)"/><circle cx="80" cy="75" r="38" fill="#fed7aa"/><circle cx="72" cy="112" r="14" fill="#fed7aa"/><circle cx="88" cy="112" r="14" fill="#fed7aa"/><circle cx="64" cy="68" r="11" fill="#ffffff" stroke="#000000" stroke-width="2"/><circle cx="64" cy="68" r="2.5" fill="#000000"/><circle cx="96" cy="68" r="11" fill="#ffffff" stroke="#000000" stroke-width="2"/><circle cx="96" cy="68" r="2.5" fill="#000000"/><path d="M68 90 Q80 98 92 90" stroke="#000000" stroke-width="2" fill="none"/></svg>`
+      }
+    ];
+
+    // 2. MOTOR DE ÁUDIO PROCEDURAL
+    class SoundEngine {
+      constructor() { this.ctx = null; this.muted = false; }
+      init() {
+        if (!this.ctx) {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          this.ctx = new AudioContext();
+        }
+        if (this.ctx.state === 'suspended') this.ctx.resume();
+      }
+      toggleMute() { this.muted = !this.muted; return this.muted; }
+      playPhonkBass() {
+        if (this.muted) return;
+        this.init();
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        const filter = this.ctx.createBiquadFilter();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(140, now);
+        osc.frequency.exponentialRampToValueAtTime(38, now + 0.35);
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(450, now);
+        filter.frequency.exponentialRampToValueAtTime(100, now + 0.4);
+        gain.gain.setValueAtTime(0.8, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.6);
+        osc.connect(filter); filter.connect(gain); gain.connect(this.ctx.destination);
+        osc.start(now); osc.stop(now + 0.65);
+      }
+      playVineBoom() {
+        if (this.muted) return;
+        this.init();
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(120, now);
+        osc.frequency.exponentialRampToValueAtTime(25, now + 0.6);
+        gain.gain.setValueAtTime(1.0, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.8);
+        osc.connect(gain); gain.connect(this.ctx.destination);
+        osc.start(now); osc.stop(now + 0.85);
+      }
+      playScouterBeep(pitchMod = 1) {
+        if (this.muted) return;
+        this.init();
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(580 * pitchMod, now);
+        osc.frequency.exponentialRampToValueAtTime(1150 * pitchMod, now + 0.08);
+        gain.gain.setValueAtTime(0.18, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.1);
+        osc.connect(gain); gain.connect(this.ctx.destination);
+        osc.start(now); osc.stop(now + 0.1);
+      }
+      playCountdownBeep(isFight = false) {
+        if (this.muted) return;
+        this.init();
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = isFight ? 'sawtooth' : 'sine';
+        osc.frequency.setValueAtTime(isFight ? 880 : 440, now);
+        gain.gain.setValueAtTime(0.35, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + (isFight ? 0.4 : 0.18));
+        osc.connect(gain); gain.connect(this.ctx.destination);
+        osc.start(now); osc.stop(now + (isFight ? 0.45 : 0.2));
+      }
+      playClash() {
+        if (this.muted) return;
+        this.playVineBoom();
+      }
+      playVictory() {
+        if (this.muted) return;
+        this.init();
+        [261.63, 329.63, 392.00, 523.25, 659.25, 783.99].forEach((freq, idx) => {
+          setTimeout(() => {
+            const now = this.ctx.currentTime;
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(freq, now);
+            gain.gain.setValueAtTime(0.25, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+            osc.connect(gain); gain.connect(this.ctx.destination);
+            osc.start(now); osc.stop(now + 0.4);
+          }, idx * 90);
+        });
+        setTimeout(() => this.playPhonkBass(), 600);
+      }
+      playDefeat() {
+        if (this.muted) return;
+        this.init();
+        [311.13, 293.66, 277.18, 233.08].forEach((freq, idx) => {
+          setTimeout(() => {
+            const now = this.ctx.currentTime;
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(freq, now);
+            gain.gain.setValueAtTime(0.28, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.45);
+            osc.connect(gain); gain.connect(this.ctx.destination);
+            osc.start(now); osc.stop(now + 0.5);
+          }, idx * 160);
+        });
+      }
+    }
+    const sound = new SoundEngine();
+
+    // 3. ANALISADOR FACIAL & HUD
+    class FaceAnalyzer {
+      constructor() {
+        this.videoElement = null; this.canvasElement = null; this.ctx = null;
+        this.stream = null; this.animFrameId = null; this.isRunning = false;
+        this.stats = { jawline: 85, hunterEyes: 88, cheekbones: 84, canthalTilt: "+4.2°", aura: 840, rank: "LOOKSMAXXER EM ALTA" };
+        this.capturedImage = null; this.hasLiveFace = false; this.frameCount = 0;
+      }
+      init(videoEl, canvasEl) {
+        this.videoElement = videoEl; this.canvasElement = canvasEl; this.ctx = canvasEl.getContext('2d');
+      }
+      async startCamera() {
+        try {
+          if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) throw new Error("Câmera não suportada");
+          this.stream = await navigator.mediaDevices.getUserMedia({ video: { width: { ideal: 640 }, height: { ideal: 480 }, facingMode: 'user' }, audio: false });
+          this.videoElement.srcObject = this.stream;
+          await this.videoElement.play();
+          this.canvasElement.width = this.videoElement.videoWidth || 640;
+          this.canvasElement.height = this.videoElement.videoHeight || 480;
+          this.isRunning = true;
+          this.startTrackingLoop();
+          return { success: true };
+        } catch (err) {
+          return { success: false, error: err.message };
+        }
+      }
+      stopCamera() {
+        if (this.animFrameId) cancelAnimationFrame(this.animFrameId);
+        if (this.stream) { this.stream.getTracks().forEach(t => t.stop()); this.stream = null; }
+        this.isRunning = false;
+      }
+      startTrackingLoop() {
+        const loop = () => {
+          if (!this.isRunning) return;
+          this.renderFrame();
+          this.animFrameId = requestAnimationFrame(loop);
+        };
+        this.animFrameId = requestAnimationFrame(loop);
+      }
+      renderFrame() {
+        const w = this.canvasElement.width; const h = this.canvasElement.height;
+        this.ctx.clearRect(0, 0, w, h);
+        if (this.videoElement.readyState >= 2) {
+          this.ctx.save();
+          this.ctx.translate(w, 0); this.ctx.scale(-1, 1);
+          this.ctx.drawImage(this.videoElement, 0, 0, w, h);
+          this.ctx.restore();
+          this.analyzeVisuals(w, h);
+          this.drawCyberHud(w, h);
+        }
+      }
+      analyzeVisuals(w, h) {
+        this.frameCount++;
+        this.hasLiveFace = true;
+        const time = Date.now() * 0.003;
+        const jawTension = Math.cos(time * 1.5) * 3;
+        this.stats.jawline = Math.min(99, Math.max(65, Math.round(85 + jawTension)));
+        this.stats.hunterEyes = Math.min(99, Math.max(65, Math.round(88 + Math.sin(time) * 2)));
+        this.stats.cheekbones = Math.min(99, Math.max(65, Math.round(84 + jawTension * 0.5)));
+        this.stats.canthalTilt = `+${(3.8 + Math.sin(time * 0.8) * 1.5).toFixed(1)}° (Hunter)`;
+        this.stats.aura = Math.min(1000, Math.max(600, Math.round((this.stats.jawline * 3.4) + (this.stats.hunterEyes * 3.6) + (this.stats.cheekbones * 3.0))));
+        if (this.stats.aura >= 950) this.stats.rank = "DEUS DO LOOKSMAXXING";
+        else if (this.stats.aura >= 900) this.stats.rank = "GIGACHAD ASCENDENTE";
+        else if (this.stats.aura >= 850) this.stats.rank = "MOGADOR ALFA";
+        else this.stats.rank = "LOOKSMAXXER EM ALTA";
+        if (this.frameCount % 120 === 0) sound.playScouterBeep(1 + (this.stats.aura / 2000));
+      }
+      drawCyberHud(w, h) {
+        const cx = w / 2; const cy = h / 2 - 10;
+        const faceW = w * 0.32; const faceH = h * 0.44;
+        this.ctx.save();
+        this.ctx.strokeStyle = "rgba(0, 240, 255, 0.25)";
+        this.ctx.setLineDash([6, 6]);
+        this.ctx.beginPath();
+        this.ctx.moveTo(cx, cy - faceH); this.ctx.lineTo(cx, cy + faceH);
+        this.ctx.moveTo(cx - faceW * 1.2, cy); this.ctx.lineTo(cx + faceW * 1.2, cy);
+        this.ctx.stroke(); this.ctx.setLineDash([]);
+
+        // Mandíbula
+        const chinY = cy + faceH * 0.85; const gonionL = cx - faceW * 0.85; const gonionR = cx + faceW * 0.85;
+        this.ctx.shadowColor = "#00f0ff"; this.ctx.shadowBlur = 10;
+        this.ctx.strokeStyle = "#00f0ff"; this.ctx.lineWidth = 2.5;
+        this.ctx.beginPath();
+        this.ctx.moveTo(gonionL, cy + faceH * 0.45);
+        this.ctx.lineTo(cx - faceW * 0.35, chinY);
+        this.ctx.lineTo(cx + faceW * 0.35, chinY);
+        this.ctx.lineTo(gonionR, cy + faceH * 0.45);
+        this.ctx.stroke();
+
+        // Hunter Eyes
+        const eyeY = cy - faceH * 0.18;
+        this.ctx.strokeStyle = "#facc15"; this.ctx.lineWidth = 1.5;
+        this.ctx.strokeRect(cx - faceW * 0.42 - 20, eyeY - 10, 40, 20);
+        this.ctx.strokeRect(cx + faceW * 0.42 - 20, eyeY - 10, 40, 20);
+        this.ctx.font = "bold 11px 'Orbitron', monospace"; this.ctx.fillStyle = "#facc15";
+        this.ctx.fillText(`CANTHAL TILT: ${this.stats.canthalTilt}`, cx - 75, eyeY - 22);
+        this.ctx.restore();
+      }
+      captureSnapshot() {
+        const snap = document.createElement('canvas');
+        snap.width = this.canvasElement.width; snap.height = this.canvasElement.height;
+        snap.getContext('2d').drawImage(this.canvasElement, 0, 0);
+        this.capturedImage = snap.toDataURL('image/png');
+        return this.capturedImage;
+      }
+      loadImageFromData(dataUrl) {
+        return new Promise((resolve) => {
+          const img = new Image();
+          img.onload = () => {
+            this.stopCamera();
+            this.canvasElement.width = 640; this.canvasElement.height = 480;
+            this.ctx.drawImage(img, 0, 0, 640, 480);
+            this.analyzeVisuals(640, 480);
+            this.drawCyberHud(640, 480);
+            this.capturedImage = this.canvasElement.toDataURL('image/png');
+            resolve(true);
+          };
+          img.src = dataUrl;
+        });
+      }
+      loadDemoFace() {
+        const demo = document.createElement('canvas'); demo.width = 640; demo.height = 480;
+        const d = demo.getContext('2d');
+        d.fillStyle = '#090d16'; d.fillRect(0, 0, 640, 480);
+        d.fillStyle = '#fed7aa';
+        d.beginPath(); d.moveTo(250, 160); d.lineTo(390, 160); d.lineTo(410, 280); d.lineTo(355, 380); d.lineTo(285, 380); d.lineTo(230, 280); d.closePath(); d.fill();
+        d.fillStyle = '#1e1b4b'; d.beginPath(); d.arc(320, 160, 85, Math.PI, 0); d.fill();
+        d.fillStyle = '#ffffff'; d.fillRect(265, 230, 35, 12); d.fillRect(340, 230, 35, 12);
+        d.fillStyle = '#0284c7'; d.fillRect(278, 232, 12, 8); d.fillRect(350, 232, 12, 8);
+        this.loadImageFromData(demo.toDataURL());
+      }
+    }
+    const faceAnalyzer = new FaceAnalyzer();
+
+    // 4. MOTOR DE BATALHA X1
+    class BattleEngine {
+      constructor() {
+        this.currentOpponent = CHARACTERS[0];
+        this.playerStats = null; this.playerPhoto = null;
+        this.battleScore = { player: 0, opponent: 0 };
+        this.isFighting = false;
+      }
+      setOpponent(charId) {
+        const found = CHARACTERS.find(c => c.id === charId);
+        if (found) this.currentOpponent = found;
+      }
+      async startFight(playerStats, playerPhoto, onProgress, onComplete) {
+        this.playerStats = playerStats; this.playerPhoto = playerPhoto;
+        this.isFighting = true; this.battleScore = { player: 0, opponent: 0 };
+        const sleep = (ms) => new Promise(r => setTimeout(r, ms));
+
+        onProgress({ step: 'INTRO', message: `${this.currentOpponent.name}: "${this.currentOpponent.introQuote}"` });
+        sound.playPhonkBass();
+        await sleep(2200);
+
+        for (let i = 3; i >= 1; i--) {
+          onProgress({ step: 'COUNTDOWN', count: i });
+          sound.playCountdownBeep(false);
+          await sleep(900);
+        }
+        onProgress({ step: 'COUNTDOWN', count: 'MOG!' });
+        sound.playCountdownBeep(true);
+        await sleep(600);
+
+        // Rodada 1: Mandíbula
+        const jawWin = this.playerStats.jawline >= this.currentOpponent.jawline ? 'player' : 'opponent';
+        if (jawWin === 'player') this.battleScore.player++; else this.battleScore.opponent++;
+        sound.playClash();
+        onProgress({ step: 'ROUND_JAW', title: 'DUELO DE MANDÍBULAS', playerVal: `${this.playerStats.jawline}%`, oppVal: `${this.currentOpponent.jawline}%`, winner: jawWin });
+        await sleep(2000);
+
+        // Rodada 2: Hunter Eyes
+        const eyeWin = this.playerStats.hunterEyes >= this.currentOpponent.hunterEyes ? 'player' : 'opponent';
+        if (eyeWin === 'player') this.battleScore.player++; else this.battleScore.opponent++;
+        sound.playClash();
+        onProgress({ step: 'ROUND_EYES', title: 'OLHAR DE CAÇADOR', playerVal: `${this.playerStats.hunterEyes}%`, oppVal: `${this.currentOpponent.hunterEyes}%`, winner: eyeWin });
+        await sleep(2000);
+
+        // Rodada 3: Aura
+        const auraWin = this.playerStats.aura >= this.currentOpponent.aura ? 'player' : 'opponent';
+        if (auraWin === 'player') this.battleScore.player += 2; else this.battleScore.opponent += 2;
+        sound.playClash();
+        onProgress({ step: 'ROUND_AURA', title: 'EXPLOSÃO DE AURA TOTAL', playerVal: `${this.playerStats.aura} pts`, oppVal: `${this.currentOpponent.aura} pts`, winner: auraWin });
+        await sleep(2200);
+
+        const playerWon = this.battleScore.player > this.battleScore.opponent;
+        this.isFighting = false;
+        if (playerWon) sound.playVictory(); else sound.playDefeat();
+
+        onComplete({
+          playerWon, opponent: this.currentOpponent, playerStats: this.playerStats,
+          quote: playerWon ? this.currentOpponent.userMoggedQuote : this.currentOpponent.moggedUserQuote,
+          subtitle: playerWon ? "Sua estrutura mandibular foi avassaladora! O adversário foi humilhado e teve que aceitar a derrota." : "O adversário impôs um mewing superior! Volte para a academia facial antes de tentar novamente."
+        });
+      }
+      generateResultCard(canvas, result) {
+        const ctx = canvas.getContext('2d'); canvas.width = 720; canvas.height = 420;
+        const bgGrad = ctx.createLinearGradient(0, 0, 720, 420);
+        bgGrad.addColorStop(0, result.playerWon ? '#064e3b' : '#7f1d1d');
+        bgGrad.addColorStop(1, '#0f172a');
+        ctx.fillStyle = bgGrad; ctx.fillRect(0, 0, 720, 420);
+        ctx.strokeStyle = result.playerWon ? '#10b981' : '#ef4444'; ctx.lineWidth = 6; ctx.strokeRect(10, 10, 700, 400);
+        ctx.font = "bold 24px 'Orbitron', sans-serif"; ctx.fillStyle = result.playerWon ? '#34d399' : '#f87171'; ctx.textAlign = "center";
+        ctx.fillText("MOG COMBAT • VEREDITO OFICIAL", 360, 48);
+
+        ctx.fillStyle = "#1e293b"; ctx.fillRect(40, 80, 200, 200);
+        if (this.playerPhoto) {
+          const img = new Image(); img.src = this.playerPhoto;
+          try { ctx.drawImage(img, 40, 80, 200, 200); } catch(e){}
+        }
+        ctx.strokeStyle = "#00f0ff"; ctx.lineWidth = 3; ctx.strokeRect(40, 80, 200, 200);
+        ctx.font = "bold 14px 'Orbitron', monospace"; ctx.fillStyle = "#fff"; ctx.fillText("VOCÊ", 140, 305);
+        ctx.fillStyle = "#00f0ff"; ctx.fillText(`AURA: ${this.playerStats.aura} PTS`, 140, 325);
+
+        ctx.font = "italic bold 44px 'Impact', sans-serif"; ctx.fillStyle = "#facc15"; ctx.fillText("VS", 360, 190);
+
+        ctx.save(); ctx.translate(360, 235); ctx.rotate(result.playerWon ? -0.1 : 0.1);
+        ctx.fillStyle = result.playerWon ? "rgba(16, 185, 129, 0.9)" : "rgba(239, 68, 68, 0.9)";
+        ctx.fillRect(-110, -22, 220, 44);
+        ctx.fillStyle = "#ffffff"; ctx.font = "bold 22px 'Orbitron', sans-serif";
+        ctx.fillText(result.playerWon ? "MOGGED!" : "FOI MOGADO!", 0, 8);
+        ctx.restore();
+
+        ctx.fillStyle = "#1e293b"; ctx.fillRect(480, 80, 200, 200);
+        ctx.strokeStyle = result.opponent.themeColor; ctx.lineWidth = 3; ctx.strokeRect(480, 80, 200, 200);
+        ctx.fillStyle = "#fff"; ctx.fillText(result.opponent.name.toUpperCase(), 580, 305);
+        ctx.fillStyle = result.opponent.accentColor; ctx.fillText(`AURA: ${result.opponent.aura} PTS`, 580, 325);
+        ctx.font = "italic 13px 'Montserrat', sans-serif"; ctx.fillStyle = "#e2e8f0";
+        ctx.fillText(`"${result.quote.substring(0, 85)}..."`, 360, 380);
+        return canvas.toDataURL('image/png');
+      }
+    }
+    const battleEngine = new BattleEngine();
+
+    // 5. INICIALIZAÇÃO DA INTERFACE & EVENTOS
+    document.addEventListener('DOMContentLoaded', () => {
+      const videoEl = document.getElementById('webcam-video');
+      const canvasEl = document.getElementById('hud-canvas');
+      const btnStartCamera = document.getElementById('btn-start-camera');
+      const btnLockPose = document.getElementById('btn-lock-pose');
+      const inputUploadPhoto = document.getElementById('input-upload-photo');
+      const btnDemoFace = document.getElementById('btn-demo-face');
+      const cameraStatusEl = document.getElementById('camera-status');
+
+      const statAuraEl = document.getElementById('stat-aura');
+      const statRankEl = document.getElementById('stat-rank');
+      const statJawVal = document.getElementById('stat-jaw-val');
+      const barJaw = document.getElementById('bar-jaw');
+      const statEyesVal = document.getElementById('stat-eyes-val');
+      const barEyes = document.getElementById('bar-eyes');
+      const statCheeksVal = document.getElementById('stat-cheeks-val');
+      const barCheeks = document.getElementById('bar-cheeks');
+
+      const opponentSelector = document.getElementById('opponent-selector');
+      const playerPreviewImg = document.getElementById('player-preview-img');
+      const playerPlaceholder = document.getElementById('player-placeholder');
+      const arenaPlayerRank = document.getElementById('arena-player-rank');
+      const arenaPlayerAura = document.getElementById('arena-player-aura');
+      const opponentAvatarBox = document.getElementById('opponent-avatar-box');
+      const arenaOppName = document.getElementById('arena-opp-name');
+      const arenaOppBadge = document.getElementById('arena-opp-badge');
+      const arenaOppAura = document.getElementById('arena-opp-aura');
+      const btnStartBattle = document.getElementById('btn-start-battle');
+      const battleCountdown = document.getElementById('battle-countdown');
+      const battleRoundInfo = document.getElementById('battle-round-info');
+      const roundTitle = document.getElementById('round-title');
+      const roundClash = document.getElementById('round-clash');
+
+      const verdictModal = document.getElementById('verdict-modal');
+      const verdictCardBox = document.getElementById('verdict-card-box');
+      const verdictStamp = document.getElementById('verdict-stamp');
+      const verdictTitle = document.getElementById('verdict-title');
+      const verdictSubtitle = document.getElementById('verdict-subtitle');
+      const verdictQuote = document.getElementById('verdict-quote');
+      const btnDownloadCard = document.getElementById('btn-download-card');
+      const btnRematch = document.getElementById('btn-rematch');
+      const btnNextOpp = document.getElementById('btn-next-opp');
+      const cardCanvas = document.getElementById('card-canvas');
+
+      const btnToggleSound = document.getElementById('btn-toggle-sound');
+      const soundIcon = document.getElementById('sound-icon');
+      const soundText = document.getElementById('sound-text');
+      const navTabs = document.querySelectorAll('.nav-tab');
+      const tabContents = document.querySelectorAll('.tab-content');
+      const catalogGrid = document.getElementById('catalog-grid');
+
+      let currentResultData = null;
+      let selectedOpponentId = 'omni-man';
+
+      faceAnalyzer.init(videoEl, canvasEl);
+
+      async function activateCamera() {
+        cameraStatusEl.textContent = 'CONECTANDO...';
+        const res = await faceAnalyzer.startCamera();
+        if (res.success) {
+          cameraStatusEl.textContent = 'ONLINE (ROSTO DETECTADO)';
+          cameraStatusEl.className = 'status-pill status-live';
+          btnStartCamera.textContent = '🟢 Câmera Ativa';
+        } else {
+          cameraStatusEl.textContent = 'CÂMERA NÃO DETECTADA';
+          faceAnalyzer.loadDemoFace();
+        }
+      }
+      btnStartCamera.addEventListener('click', activateCamera);
+
+      setInterval(() => {
+        if (faceAnalyzer.hasLiveFace || faceAnalyzer.capturedImage) {
+          const s = faceAnalyzer.stats;
+          statAuraEl.textContent = s.aura; statRankEl.textContent = s.rank;
+          statJawVal.textContent = `${s.jawline}%`; barJaw.style.width = `${s.jawline}%`;
+          statEyesVal.textContent = `${s.hunterEyes}%`; barEyes.style.width = `${s.hunterEyes}%`;
+          statCheeksVal.textContent = `${s.cheekbones}%`; barCheeks.style.width = `${s.cheekbones}%`;
+          arenaPlayerRank.textContent = s.rank; arenaPlayerAura.textContent = `AURA: ${s.aura} PTS`;
+        }
+      }, 100);
+
+      btnLockPose.addEventListener('click', () => {
+        const photo = faceAnalyzer.captureSnapshot();
+        sound.playVineBoom();
+        playerPreviewImg.src = photo; playerPreviewImg.style.display = 'block';
+        playerPlaceholder.style.display = 'none';
+        switchTab('tab-arena');
+      });
+
+      inputUploadPhoto.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = (evt) => {
+            faceAnalyzer.loadImageFromData(evt.target.result).then(() => {
+              playerPreviewImg.src = faceAnalyzer.capturedImage;
+              playerPreviewImg.style.display = 'block'; playerPlaceholder.style.display = 'none';
+              sound.playScouterBeep();
+            });
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+
+      btnDemoFace.addEventListener('click', () => {
+        faceAnalyzer.loadDemoFace();
+        playerPreviewImg.src = faceAnalyzer.capturedImage;
+        playerPreviewImg.style.display = 'block'; playerPlaceholder.style.display = 'none';
+        sound.playScouterBeep();
+      });
+
+      function switchTab(tabId) {
+        navTabs.forEach(t => t.classList.toggle('active', t.dataset.tab === tabId));
+        tabContents.forEach(c => c.classList.toggle('active', c.id === tabId));
+      }
+      navTabs.forEach(tab => tab.addEventListener('click', () => switchTab(tab.dataset.tab)));
+
+      function renderOpponents() {
+        opponentSelector.innerHTML = '';
+        CHARACTERS.forEach(char => {
+          const card = document.createElement('div');
+          card.className = `opponent-mini-card ${char.id === selectedOpponentId ? 'selected' : ''}`;
+          card.innerHTML = `<div class="opponent-mini-avatar">${char.avatarSvg}</div><div class="opponent-mini-name">${char.name}</div><div class="opponent-mini-tier">TIER ${char.tier}</div>`;
+          card.addEventListener('click', () => selectOpponent(char.id));
+          opponentSelector.appendChild(card);
+        });
+      }
+
+      function selectOpponent(charId) {
+        selectedOpponentId = charId;
+        battleEngine.setOpponent(charId);
+        const char = CHARACTERS.find(c => c.id === charId);
+        if (!char) return;
+        opponentAvatarBox.innerHTML = char.avatarSvg;
+        arenaOppName.textContent = char.name.toUpperCase();
+        arenaOppBadge.textContent = `${char.badge.toUpperCase()} • TIER ${char.tier}`;
+        arenaOppAura.textContent = `AURA: ${char.aura} PTS`;
+        document.querySelectorAll('.opponent-mini-card').forEach(el => {
+          el.classList.toggle('selected', el.querySelector('.opponent-mini-name').textContent === char.name);
+        });
+        sound.playScouterBeep();
+      }
+
+      function renderCatalog() {
+        catalogGrid.innerHTML = '';
+        CHARACTERS.forEach(char => {
+          const card = document.createElement('div');
+          card.className = 'char-card';
+          card.innerHTML = `
+            <div class="char-avatar-container">${char.avatarSvg}</div>
+            <div class="char-header"><h3 class="char-name">${char.name}</h3><span class="char-tier">TIER ${char.tier}</span></div>
+            <div class="char-origin">${char.origin}</div>
+            <div class="char-stats-compact">
+              <div><div class="stat-box-num">${char.jawline}%</div><div class="stat-box-lbl">Mandíbula</div></div>
+              <div><div class="stat-box-num">${char.hunterEyes}%</div><div class="stat-box-lbl">Hunter Eyes</div></div>
+              <div><div class="stat-box-num">${char.aura}</div><div class="stat-box-lbl">Aura</div></div>
+            </div>
+            <p style="font-size: 0.78rem; color: #cbd5e1; font-style: italic; margin-bottom: 0.8rem;">"${char.tagline}"</p>
+            <button class="btn-challenge" data-char="${char.id}">⚔️ Desafiar no X1</button>
+          `;
+          card.querySelector('.btn-challenge').addEventListener('click', () => {
+            selectOpponent(char.id); switchTab('tab-arena');
+          });
+          catalogGrid.appendChild(card);
+        });
+      }
+
+      btnStartBattle.addEventListener('click', () => {
+        if (battleEngine.isFighting) return;
+        let photo = faceAnalyzer.capturedImage || faceAnalyzer.captureSnapshot();
+        if (!photo) { faceAnalyzer.loadDemoFace(); photo = faceAnalyzer.capturedImage; }
+        playerPreviewImg.src = photo; playerPreviewImg.style.display = 'block'; playerPlaceholder.style.display = 'none';
+
+        btnStartBattle.disabled = true; btnStartBattle.style.opacity = '0.5'; battleRoundInfo.style.display = 'none';
+
+        battleEngine.startFight(faceAnalyzer.stats, photo, (prog) => {
+          if (prog.step === 'INTRO') {
+            battleCountdown.textContent = 'FIGHT!'; battleRoundInfo.style.display = 'block';
+            roundTitle.textContent = 'ENCARADA'; roundClash.textContent = prog.message;
+          } else if (prog.step === 'COUNTDOWN') {
+            battleCountdown.textContent = prog.count;
+          } else if (prog.step.startsWith('ROUND_')) {
+            battleCountdown.textContent = 'CLASH!'; battleRoundInfo.style.display = 'block';
+            roundTitle.textContent = prog.title;
+            roundClash.innerHTML = `<div>Você: <strong>${prog.playerVal}</strong> vs Oponente: <strong>${prog.oppVal}</strong></div>
+              <div style="color: ${prog.winner === 'player' ? 'var(--green-neon)' : 'var(--red-neon)'}; font-weight: bold; margin-top: 4px;">
+                ${prog.winner === 'player' ? 'VOCÊ VENCEU A RODADA!' : 'ADVERSÁRIO VENCEU A RODADA!'}
+              </div>`;
+          }
+        }, (result) => {
+          currentResultData = result;
+          btnStartBattle.disabled = false; btnStartBattle.style.opacity = '1';
+          battleCountdown.textContent = ''; battleRoundInfo.style.display = 'none';
+          showVerdict(result);
+        });
+      });
+
+      function showVerdict(result) {
+        verdictModal.classList.add('active');
+        verdictCardBox.classList.toggle('defeat', !result.playerWon);
+        verdictStamp.className = result.playerWon ? 'verdict-stamp stamp-victory' : 'verdict-stamp stamp-defeat';
+        verdictStamp.textContent = result.playerWon ? 'MOGGED!' : 'FOI MOGADO!';
+        verdictTitle.textContent = result.playerWon ? `VOCÊ MOGOU O ${result.opponent.name.toUpperCase()}!` : `VOCÊ FOI MOGADO PELO ${result.opponent.name.toUpperCase()}!`;
+        verdictTitle.style.color = result.playerWon ? 'var(--green-neon)' : 'var(--red-neon)';
+        verdictSubtitle.textContent = result.subtitle;
+        verdictQuote.innerHTML = `<strong>${result.opponent.name}:</strong> "${result.quote}"`;
+        battleEngine.generateResultCard(cardCanvas, result);
+      }
+
+      btnDownloadCard.addEventListener('click', () => {
+        if (!currentResultData) return;
+        const dataUrl = battleEngine.generateResultCard(cardCanvas, currentResultData);
+        const link = document.createElement('a'); link.download = `MOG-COMBAT-${Date.now()}.png`;
+        link.href = dataUrl; link.click();
+      });
+
+      btnRematch.addEventListener('click', () => { verdictModal.classList.remove('active'); btnStartBattle.click(); });
+      btnNextOpp.addEventListener('click', () => {
+        verdictModal.classList.remove('active');
+        const idx = CHARACTERS.findIndex(c => c.id === selectedOpponentId);
+        selectOpponent(CHARACTERS[(idx + 1) % CHARACTERS.length].id);
+      });
+
+      verdictModal.addEventListener('click', (e) => { if (e.target === verdictModal) verdictModal.classList.remove('active'); });
+
+      btnToggleSound.addEventListener('click', () => {
+        const m = sound.toggleMute();
+        soundIcon.textContent = m ? '🔇' : '🔊'; soundText.textContent = m ? 'Áudio: MUDO' : 'Áudio: LIGADO';
+        btnToggleSound.style.color = m ? 'var(--red-neon)' : 'var(--cyan-neon)';
+        if (!m) sound.playScouterBeep();
+      });
+
+      document.getElementById('btn-help').addEventListener('click', () => {
+        alert("🥊 COMO JOGAR O MOG COMBAT:\n\n1. Ligue a câmera ou use o rosto Demo no Scanner.\n2. Faça sua pose de mewing e clique em 'Travar Pose'.\n3. Escolha seu adversário (Omni-Man, McQueen, GigaChad, etc.).\n4. Clique em 'LUTAR X1 DE MOGGING!' e veja quem moga quem!\n5. Baixe seu Card oficial de vitória.");
+      });
+
+      renderOpponents(); renderCatalog(); selectOpponent('omni-man'); activateCamera();
+    });
+  </script>
+</body>
+</html>
